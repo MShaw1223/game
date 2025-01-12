@@ -50,47 +50,141 @@ fn main() {
         match input.as_str() {
             "a" => {
                 println!("press: a");
-                if next_values[input.as_str()] != 0 {
-                    match move_character(curr, &input) {
-                        Ok(new_val) => curr_col = new_val,
-                        Err(()) => eprintln!("Error moving character"),
-                    };
-                    moves.push(input);
+                match next_values[input.as_str()] {
+                    0 => println!("Ow, there is a wall there."),
+                    1 => {
+                        match move_character(curr, &input) {
+                            Ok(new_val) => curr_col = new_val,
+                            Err(()) => eprintln!("Error moving character"),
+                        };
+                        moves.push(input);
+                    }
+                    3 => loop {
+                        println!("Enter door? y/n\n> ");
+                        let choice: String = read!();
+                        match choice.as_str() {
+                            "y" => {
+                                match move_character(curr, &input) {
+                                    Ok(new) => curr_col = new - 1,
+                                    Err(()) => eprintln!("Error moving character"),
+                                }
+                                break;
+                            }
+                            "n" => {
+                                break;
+                            }
+                            _ => {
+                                println!("Incorrect input.")
+                            }
+                        }
+                    },
+                    _ => println!("Incorrect input"),
                 }
             }
             "w" => {
                 println!("press: w");
-                if next_values[input.as_str()] != 0 {
-                    match move_character(curr, &input) {
-                        Ok(new_val) => curr_row = new_val,
-                        Err(()) => eprintln!("Error moving character"),
-                    };
-                    moves.push(input);
+                match next_values[input.as_str()] {
+                    0 => println!("Ow, there is a wall there."),
+                    1 => {
+                        match move_character(curr, &input) {
+                            Ok(new_val) => curr_row = new_val,
+                            Err(()) => eprintln!("Error moving character"),
+                        };
+                        moves.push(input);
+                    }
+                    3 => loop {
+                        println!("Enter door? y/n\n> ");
+                        let choice: String = read!();
+                        match choice.as_str() {
+                            "y" => {
+                                match move_character(curr, &input) {
+                                    Ok(new) => curr_row = new - 1,
+                                    Err(()) => eprintln!("Error moving character"),
+                                }
+                                moves.push(input);
+                                break;
+                            }
+                            "n" => {
+                                break;
+                            }
+                            _ => {
+                                println!("Incorrect input.")
+                            }
+                        }
+                    },
+                    _ => println!("Incorrect input"),
                 }
             }
             "s" => {
                 println!("press: s");
-                if next_values[input.as_str()] != 0 {
-                    match move_character(curr, &input) {
-                        Ok(new_val) => curr_row = new_val,
-                        Err(()) => eprintln!("Error moving character"),
-                    };
-                    moves.push(input);
+                match next_values[input.as_str()] {
+                    0 => println!("Ow, there is a wall there."),
+                    1 => {
+                        match move_character(curr, &input) {
+                            Ok(new_val) => curr_row = new_val,
+                            Err(()) => eprintln!("Error moving character"),
+                        };
+                        moves.push(input);
+                    }
+                    3 => loop {
+                        println!("Enter door? y/n\n> ");
+                        let choice: String = read!();
+                        match choice.as_str() {
+                            "y" => {
+                                match move_character(curr, &input) {
+                                    Ok(new) => curr_row = new + 1,
+                                    Err(()) => eprintln!("Error moving character"),
+                                }
+                                moves.push(input);
+                                break;
+                            }
+                            "n" => {
+                                break;
+                            }
+                            _ => {
+                                println!("Incorrect input.")
+                            }
+                        }
+                    },
+                    _ => println!("Incorrect input"),
                 }
             }
             "d" => {
                 println!("press: d");
-                if next_values[input.as_str()] != 0 {
-                    match move_character(curr, &input) {
-                        Ok(new_val) => curr_col = new_val,
-                        Err(()) => eprintln!("Error moving character"),
-                    };
-                    moves.push(input);
+                match next_values[input.as_str()] {
+                    0 => println!("Ow, there is a wall there."),
+                    1 => {
+                        match move_character(curr, &input) {
+                            Ok(new_val) => curr_col = new_val,
+                            Err(()) => eprintln!("Error moving character"),
+                        };
+                        moves.push(input);
+                    }
+                    3 => loop {
+                        println!("Enter door? y/n\n> ");
+                        let choice: String = read!();
+                        match choice.as_str() {
+                            "y" => {
+                                match move_character(curr, &input) {
+                                    Ok(new) => curr_col = new + 1,
+                                    Err(()) => eprintln!("Error moving character"),
+                                }
+                                break;
+                            }
+                            "n" => {
+                                break;
+                            }
+                            _ => {
+                                println!("Incorrect input.")
+                            }
+                        }
+                    },
+                    _ => println!("Incorrect input"),
                 }
             }
             "q" => break,
             _ => {
-                println!("Invalid input")
+                eprintln!("Invalid input")
             }
         }
     }
