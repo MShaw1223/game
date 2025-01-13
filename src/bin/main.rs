@@ -28,6 +28,7 @@ fn main() {
     let mut moves: Vec<String> = vec!["None".to_string()];
 
     let mut score: i32 = 0;
+    let mut health: i32 = 30;
 
     let mut curr_row: usize = 5;
     let mut curr_col: usize = 5;
@@ -60,7 +61,7 @@ fn main() {
                         moves.push(input);
                     }
                     3 => loop {
-                        println!("Enter door? y/n\n> ");
+                        println!("Enter door? y/n: ");
                         let choice: String = read!();
                         match choice.as_str() {
                             "y" => {
@@ -74,11 +75,31 @@ fn main() {
                                 break;
                             }
                             _ => {
-                                println!("Incorrect input.")
+                                eprintln!("Incorrect input.")
                             }
                         }
                     },
-                    _ => println!("Incorrect input"),
+                    4 => {
+                        let mut monster_health = 10;
+                        loop {
+                            println!("Monster");
+                            if monster_health <= 0 {
+                                match move_character(curr, &input) {
+                                    Ok(new) => curr_col = new - 1,
+                                    Err(()) => eprintln!("Error leaving battle"),
+                                }
+                                score += 5;
+                                break;
+                            } else {
+                                let attack: i8 = read!();
+                                match attack {
+                                    1 => monster_health -= 5,
+                                    _ => eprintln!("Incorrect input"),
+                                }
+                            }
+                        }
+                    }
+                    _ => eprintln!("Tile doesn't exist."),
                 }
             }
             "w" => {
@@ -93,7 +114,7 @@ fn main() {
                         moves.push(input);
                     }
                     3 => loop {
-                        println!("Enter door? y/n\n> ");
+                        println!("Enter door? y/n: ");
                         let choice: String = read!();
                         match choice.as_str() {
                             "y" => {
@@ -108,11 +129,31 @@ fn main() {
                                 break;
                             }
                             _ => {
-                                println!("Incorrect input.")
+                                eprintln!("Incorrect input.")
                             }
                         }
                     },
-                    _ => println!("Incorrect input"),
+                    4 => {
+                        let mut monster_health = 10;
+                        loop {
+                            println!("Monster");
+                            if monster_health <= 0 {
+                                match move_character(curr, &input) {
+                                    Ok(new) => curr_row = new - 1,
+                                    Err(()) => eprintln!("Error leaving battle"),
+                                }
+                                score += 5;
+                                break;
+                            } else {
+                                let attack: i8 = read!();
+                                match attack {
+                                    1 => monster_health -= 5,
+                                    _ => eprintln!("Invalid attack."),
+                                }
+                            }
+                        }
+                    }
+                    _ => eprintln!("Tile doesn't exist."),
                 }
             }
             "s" => {
@@ -127,7 +168,7 @@ fn main() {
                         moves.push(input);
                     }
                     3 => loop {
-                        println!("Enter door? y/n\n> ");
+                        println!("Enter door? y/n: ");
                         let choice: String = read!();
                         match choice.as_str() {
                             "y" => {
@@ -142,11 +183,31 @@ fn main() {
                                 break;
                             }
                             _ => {
-                                println!("Incorrect input.")
+                                eprintln!("Incorrect input.")
                             }
                         }
                     },
-                    _ => println!("Incorrect input"),
+                    4 => {
+                        let mut monster_health = 10;
+                        loop {
+                            println!("Monster");
+                            if monster_health <= 0 {
+                                match move_character(curr, &input) {
+                                    Ok(new) => curr_row = new + 1,
+                                    Err(()) => eprintln!("Error leaving battle"),
+                                }
+                                score += 5;
+                                break;
+                            } else {
+                                let attack: i8 = read!();
+                                match attack {
+                                    1 => monster_health -= 5,
+                                    _ => eprintln!("Invalid attack."),
+                                }
+                            }
+                        }
+                    }
+                    _ => eprintln!("Tile doesn't exist."),
                 }
             }
             "d" => {
@@ -161,7 +222,7 @@ fn main() {
                         moves.push(input);
                     }
                     3 => loop {
-                        println!("Enter door? y/n\n> ");
+                        println!("Enter door? y/n: ");
                         let choice: String = read!();
                         match choice.as_str() {
                             "y" => {
@@ -175,11 +236,31 @@ fn main() {
                                 break;
                             }
                             _ => {
-                                println!("Incorrect input.")
+                                eprintln!("Incorrect input.")
                             }
                         }
                     },
-                    _ => println!("Incorrect input"),
+                    4 => {
+                        let mut monster_health = 10;
+                        loop {
+                            println!("Monster");
+                            if monster_health <= 0 {
+                                match move_character(curr, &input) {
+                                    Ok(new) => curr_col = new + 1,
+                                    Err(()) => eprintln!("Error leaving battle"),
+                                }
+                                score += 5;
+                                break;
+                            } else {
+                                let attack: i8 = read!();
+                                match attack {
+                                    1 => monster_health -= 5,
+                                    _ => eprintln!("Invalid attack."),
+                                }
+                            }
+                        }
+                    }
+                    _ => eprintln!("Tile doesn't exist."),
                 }
             }
             "q" => break,
