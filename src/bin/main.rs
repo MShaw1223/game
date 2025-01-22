@@ -1,6 +1,11 @@
 use std::collections::HashMap;
 
+use rand::Rng;
+
 use text_io::read;
+
+mod game;
+use game::*;
 
 fn main() {
     let map: Vec<Vec<i8>> = vec![
@@ -27,17 +32,27 @@ fn main() {
 
     let mut moves: Vec<String> = vec!["None".to_string()];
 
+    let game_weapons: HashMap<&str, i32> = HashMap::from([("sword", 12), ("bow", 10), ("axe", 15)]);
+    let mut user_weapons: HashMap<&str, i32> = HashMap::from([("dagger", 5)]);
+
     let mut score: i32 = 0;
     let mut health: i32 = 30;
 
     let mut curr_row: usize = 5;
     let mut curr_col: usize = 5;
+    let monsters = vec![
+        "Zombie".to_string(),
+        "Werewolf".to_string(),
+        "Ghost".to_string(),
+    ];
 
     loop {
         let curr = capture_current_position(curr_row, curr_col);
         let curr_value = get_current_position_value(curr, &map);
         let next_values = get_next_move_value(curr, &map);
+        let random = rand::thread_rng().gen_range(0..3);
 
+        println!("Health: {}", health);
         println!("Score: {}", score);
         println!(
             "Pos: {:?}\nTile: {:?}\nStanding on: {}",
@@ -49,270 +64,77 @@ fn main() {
         let input: String = read!();
 
         match input.as_str() {
-            "a" => {
-                println!("press: a");
-                match next_values[input.as_str()] {
-                    0 => println!("Ow, there is a wall there."),
-                    1 => {
-                        match move_character(curr, &input) {
-                            Ok(new_val) => curr_col = new_val,
-                            Err(()) => eprintln!("Error moving character"),
-                        };
-                        moves.push(input);
-                    }
-                    3 => loop {
-                        println!("Enter door? y/n: ");
-                        let choice: String = read!();
-                        match choice.as_str() {
-                            "y" => {
-                                match move_character(curr, &input) {
-                                    Ok(new) => curr_col = new - 1,
-                                    Err(()) => eprintln!("Error moving character"),
-                                }
-                                break;
-                            }
-                            "n" => {
-                                break;
-                            }
-                            _ => {
-                                eprintln!("Incorrect input.")
-                            }
-                        }
-                    },
-                    4 => {
-                        let mut monster_health = 10;
-                        loop {
-                            println!("Monster");
-                            if monster_health <= 0 {
-                                match move_character(curr, &input) {
-                                    Ok(new) => curr_col = new - 1,
-                                    Err(()) => eprintln!("Error leaving battle"),
-                                }
-                                score += 5;
-                                break;
-                            } else {
-                                let attack: i8 = read!();
-                                match attack {
-                                    1 => monster_health -= 5,
-                                    _ => eprintln!("Incorrect input"),
-                                }
-                            }
-                        }
-                    }
-                    _ => eprintln!("Tile doesn't exist."),
-                }
-            }
-            "w" => {
-                println!("press: w");
-                match next_values[input.as_str()] {
-                    0 => println!("Ow, there is a wall there."),
-                    1 => {
-                        match move_character(curr, &input) {
-                            Ok(new_val) => curr_row = new_val,
-                            Err(()) => eprintln!("Error moving character"),
-                        };
-                        moves.push(input);
-                    }
-                    3 => loop {
-                        println!("Enter door? y/n: ");
-                        let choice: String = read!();
-                        match choice.as_str() {
-                            "y" => {
-                                match move_character(curr, &input) {
-                                    Ok(new) => curr_row = new - 1,
-                                    Err(()) => eprintln!("Error moving character"),
-                                }
-                                moves.push(input);
-                                break;
-                            }
-                            "n" => {
-                                break;
-                            }
-                            _ => {
-                                eprintln!("Incorrect input.")
-                            }
-                        }
-                    },
-                    4 => {
-                        let mut monster_health = 10;
-                        loop {
-                            println!("Monster");
-                            if monster_health <= 0 {
-                                match move_character(curr, &input) {
-                                    Ok(new) => curr_row = new - 1,
-                                    Err(()) => eprintln!("Error leaving battle"),
-                                }
-                                score += 5;
-                                break;
-                            } else {
-                                let attack: i8 = read!();
-                                match attack {
-                                    1 => monster_health -= 5,
-                                    _ => eprintln!("Invalid attack."),
-                                }
-                            }
-                        }
-                    }
-                    _ => eprintln!("Tile doesn't exist."),
-                }
-            }
-            "s" => {
-                println!("press: s");
-                match next_values[input.as_str()] {
-                    0 => println!("Ow, there is a wall there."),
-                    1 => {
-                        match move_character(curr, &input) {
-                            Ok(new_val) => curr_row = new_val,
-                            Err(()) => eprintln!("Error moving character"),
-                        };
-                        moves.push(input);
-                    }
-                    3 => loop {
-                        println!("Enter door? y/n: ");
-                        let choice: String = read!();
-                        match choice.as_str() {
-                            "y" => {
-                                match move_character(curr, &input) {
-                                    Ok(new) => curr_row = new + 1,
-                                    Err(()) => eprintln!("Error moving character"),
-                                }
-                                moves.push(input);
-                                break;
-                            }
-                            "n" => {
-                                break;
-                            }
-                            _ => {
-                                eprintln!("Incorrect input.")
-                            }
-                        }
-                    },
-                    4 => {
-                        let mut monster_health = 10;
-                        loop {
-                            println!("Monster");
-                            if monster_health <= 0 {
-                                match move_character(curr, &input) {
-                                    Ok(new) => curr_row = new + 1,
-                                    Err(()) => eprintln!("Error leaving battle"),
-                                }
-                                score += 5;
-                                break;
-                            } else {
-                                let attack: i8 = read!();
-                                match attack {
-                                    1 => monster_health -= 5,
-                                    _ => eprintln!("Invalid attack."),
-                                }
-                            }
-                        }
-                    }
-                    _ => eprintln!("Tile doesn't exist."),
-                }
-            }
-            "d" => {
-                println!("press: d");
-                match next_values[input.as_str()] {
-                    0 => println!("Ow, there is a wall there."),
-                    1 => {
-                        match move_character(curr, &input) {
-                            Ok(new_val) => curr_col = new_val,
-                            Err(()) => eprintln!("Error moving character"),
-                        };
-                        moves.push(input);
-                    }
-                    3 => loop {
-                        println!("Enter door? y/n: ");
-                        let choice: String = read!();
-                        match choice.as_str() {
-                            "y" => {
-                                match move_character(curr, &input) {
-                                    Ok(new) => curr_col = new + 1,
-                                    Err(()) => eprintln!("Error moving character"),
-                                }
-                                break;
-                            }
-                            "n" => {
-                                break;
-                            }
-                            _ => {
-                                eprintln!("Incorrect input.")
-                            }
-                        }
-                    },
-                    4 => {
-                        let mut monster_health = 10;
-                        loop {
-                            println!("Monster");
-                            if monster_health <= 0 {
-                                match move_character(curr, &input) {
-                                    Ok(new) => curr_col = new + 1,
-                                    Err(()) => eprintln!("Error leaving battle"),
-                                }
-                                score += 5;
-                                break;
-                            } else {
-                                let attack: i8 = read!();
-                                match attack {
-                                    1 => monster_health -= 5,
-                                    _ => eprintln!("Invalid attack."),
-                                }
-                            }
-                        }
-                    }
-                    _ => eprintln!("Tile doesn't exist."),
-                }
-            }
+            "a" => match next_values[input.as_str()] {
+                0 => println!("Ow, there is a wall there."),
+                1 => path_movement(curr, input, &mut curr_col, &mut moves),
+                3 => door_movement(curr, input, &mut curr_col, 0),
+                4 => monster_movement(
+                    curr,
+                    input,
+                    &mut curr_col,
+                    &monsters,
+                    random,
+                    &mut score,
+                    &mut health,
+                    0,
+                ),
+                _ => eprintln!("Tile doesn't exist."),
+            },
+            "w" => match next_values[input.as_str()] {
+                0 => println!("Ow, there is a wall there."),
+                1 => path_movement(curr, input, &mut curr_row, &mut moves),
+                3 => door_movement(curr, input, &mut curr_row, 0),
+                4 => monster_movement(
+                    curr,
+                    input,
+                    &mut curr_row,
+                    &monsters,
+                    random,
+                    &mut score,
+                    &mut health,
+                    0,
+                ),
+                _ => eprintln!("Tile doesn't exist."),
+            },
+            "s" => match next_values[input.as_str()] {
+                0 => println!("Ow, there is a wall there."),
+                1 => path_movement(curr, input, &mut curr_row, &mut moves),
+                3 => door_movement(curr, input, &mut curr_row, 1),
+                4 => monster_movement(
+                    curr,
+                    input,
+                    &mut curr_row,
+                    &monsters,
+                    random,
+                    &mut score,
+                    &mut health,
+                    1,
+                ),
+                _ => eprintln!("Tile doesn't exist."),
+            },
+            "d" => match next_values[input.as_str()] {
+                0 => println!("Ow, there is a wall there."),
+                1 => path_movement(curr, input, &mut curr_col, &mut moves),
+                3 => door_movement(curr, input, &mut curr_col, 1),
+                4 => monster_movement(
+                    curr,
+                    input,
+                    &mut curr_col,
+                    &monsters,
+                    random,
+                    &mut score,
+                    &mut health,
+                    1,
+                ),
+                _ => eprintln!("Tile doesn't exist."),
+            },
             "q" => break,
             _ => {
                 eprintln!("Invalid input")
             }
         }
     }
+    println!("Final Score: {}", score);
     println!("Last move: {}", moves.last().unwrap());
-    println!("Last position: {},{}", curr_row, curr_col);
-}
-
-fn capture_current_position(row: usize, col: usize) -> (usize, usize) {
-    return (row, col);
-}
-
-fn get_current_position_value(current: (usize, usize), map: &Vec<Vec<i8>>) -> i8 {
-    map[current.0][current.1]
-}
-
-fn get_next_move_value(curr: (usize, usize), map: &Vec<Vec<i8>>) -> HashMap<&str, i8> {
-    let row = curr.0 as usize;
-    let col = curr.1 as usize;
-
-    let dict: HashMap<&str, i8> = HashMap::from([
-        ("a", map[row][col - 1]),
-        ("w", map[row - 1][col]),
-        ("s", map[row + 1][col]),
-        ("d", map[row][col + 1]),
-    ]);
-
-    dict
-}
-
-fn display(current: (usize, usize), next: &HashMap<&str, i8>, map: &Vec<Vec<i8>>) -> () {
-    println!("\t{:?}", next["w"]);
-    println!(
-        "{:?}\t{:?}\t{:?}",
-        next["a"], map[current.0 as usize][current.1 as usize], next["d"]
-    );
-    println!("\t{:?}", next["s"]);
-}
-
-fn move_character(current: (usize, usize), input: &str) -> Result<usize, ()> {
-    let row = current.0 as usize;
-    let col = current.1 as usize;
-
-    match input {
-        "a" => Ok(col - 1),
-        "w" => Ok(row - 1),
-        "s" => Ok(row + 1),
-        "d" => Ok(col + 1),
-        _ => Err(()),
-    }
+    println!("Last position: ({},{})", curr_row, curr_col);
 }
