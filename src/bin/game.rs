@@ -1,6 +1,8 @@
+use rand::Rng;
 use std::collections::HashMap;
 use text_io::read;
 
+// Return values
 pub fn capture_current_position(row: usize, col: usize) -> (usize, usize) {
     return (row, col);
 }
@@ -45,6 +47,7 @@ pub fn move_character(current: (usize, usize), input: &str) -> Result<usize, ()>
     }
 }
 
+// No return values
 pub fn path_movement(
     curr: (usize, usize),
     input: String,
@@ -95,11 +98,11 @@ pub fn monster_movement(
     input: String,
     row_col: &mut usize,
     monsters: &Vec<String>,
-    random: i8,
     score: &mut i32,
     health: &mut i32,
     extra_step: usize,
 ) {
+    let random = rand::thread_rng().gen_range(0..3);
     let mut monster_health = 10;
     let monster = &monsters[random as usize];
     loop {
@@ -134,4 +137,25 @@ pub fn monster_movement(
             *health -= 1
         }
     }
+}
+
+pub fn loot_movement(
+    curr: (usize, usize),
+    input: String,
+    row_col: &mut usize,
+    moves: &mut Vec<String>,
+    user_weapons: &mut Vec<(&str, i32)>,
+) {
+    let game_weapons: Vec<(&str, i32)> = vec![("sword", 12), ("bow", 10), ("axe", 15)];
+
+    let random = rand::thread_rng().gen_range(0..3);
+
+    user_weapons.push(game_weapons[random]);
+
+    match move_character(curr, &input) {
+        Ok(new_val) => *row_col = new_val,
+        Err(()) => eprintln!("Error moving character"),
+    };
+    moves.push(input);
+    println!("You have picked up a: {}", game_weapons[random].0)
 }

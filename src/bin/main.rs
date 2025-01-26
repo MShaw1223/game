@@ -1,7 +1,5 @@
 use std::collections::HashMap;
 
-use rand::Rng;
-
 use text_io::read;
 
 mod game;
@@ -32,8 +30,7 @@ fn main() {
 
     let mut moves: Vec<String> = vec!["None".to_string()];
 
-    let game_weapons: HashMap<&str, i32> = HashMap::from([("sword", 12), ("bow", 10), ("axe", 15)]);
-    let mut user_weapons: HashMap<&str, i32> = HashMap::from([("dagger", 5)]);
+    let mut user_weapons: Vec<(&str, i32)> = vec![("dagger", 5)];
 
     let mut score: i32 = 0;
     let mut health: i32 = 30;
@@ -50,7 +47,6 @@ fn main() {
         let curr = capture_current_position(curr_row, curr_col);
         let curr_value = get_current_position_value(curr, &map);
         let next_values = get_next_move_value(curr, &map);
-        let random = rand::thread_rng().gen_range(0..3);
 
         println!("Health: {}", health);
         println!("Score: {}", score);
@@ -67,13 +63,13 @@ fn main() {
             "a" => match next_values[input.as_str()] {
                 0 => println!("Ow, there is a wall there."),
                 1 => path_movement(curr, input, &mut curr_col, &mut moves),
+                2 => loot_movement(curr, input, &mut curr_col, &mut moves, &mut user_weapons),
                 3 => door_movement(curr, input, &mut curr_col, 0),
                 4 => monster_movement(
                     curr,
                     input,
                     &mut curr_col,
                     &monsters,
-                    random,
                     &mut score,
                     &mut health,
                     0,
@@ -83,13 +79,13 @@ fn main() {
             "w" => match next_values[input.as_str()] {
                 0 => println!("Ow, there is a wall there."),
                 1 => path_movement(curr, input, &mut curr_row, &mut moves),
+                2 => loot_movement(curr, input, &mut curr_row, &mut moves, &mut user_weapons),
                 3 => door_movement(curr, input, &mut curr_row, 0),
                 4 => monster_movement(
                     curr,
                     input,
                     &mut curr_row,
                     &monsters,
-                    random,
                     &mut score,
                     &mut health,
                     0,
@@ -99,13 +95,13 @@ fn main() {
             "s" => match next_values[input.as_str()] {
                 0 => println!("Ow, there is a wall there."),
                 1 => path_movement(curr, input, &mut curr_row, &mut moves),
+                2 => loot_movement(curr, input, &mut curr_row, &mut moves, &mut user_weapons),
                 3 => door_movement(curr, input, &mut curr_row, 1),
                 4 => monster_movement(
                     curr,
                     input,
                     &mut curr_row,
                     &monsters,
-                    random,
                     &mut score,
                     &mut health,
                     1,
@@ -115,13 +111,13 @@ fn main() {
             "d" => match next_values[input.as_str()] {
                 0 => println!("Ow, there is a wall there."),
                 1 => path_movement(curr, input, &mut curr_col, &mut moves),
+                2 => loot_movement(curr, input, &mut curr_col, &mut moves, &mut user_weapons),
                 3 => door_movement(curr, input, &mut curr_col, 1),
                 4 => monster_movement(
                     curr,
                     input,
                     &mut curr_col,
                     &monsters,
-                    random,
                     &mut score,
                     &mut health,
                     1,
