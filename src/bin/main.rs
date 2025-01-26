@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 
 use text_io::read;
 
