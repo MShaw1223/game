@@ -2,58 +2,58 @@ use rand::Rng;
 use std::collections::HashMap;
 use text_io::read;
 
+#[derive(Debug, Clone, Copy)]
+pub struct Position {
+    pub row: usize,
+    pub col: usize,
+}
+
+#[derive(Debug, Clone)]
+pub struct MoveOptions {
+    pub options: HashMap<&'static str, i8>,
+}
+
 // Return values
-pub fn capture_current_position(row: usize, col: usize) -> (usize, usize) {
-    return (row, col);
+pub fn capture_current_position(row: usize, col: usize) -> Position {
+    Position { row, col }
 }
 
-pub fn get_current_position_value(current: (usize, usize), map: &Vec<Vec<i8>>) -> i8 {
-    map[current.0][current.1]
+pub fn get_current_position_value(current: Position, map: &Vec<Vec<i8>>) -> i8 {
+    map[current.row][current.col]
 }
 
-pub fn get_next_move_value(curr: (usize, usize), map: &Vec<Vec<i8>>) -> HashMap<&str, i8> {
-    let row = curr.0 as usize;
-    let col = curr.1 as usize;
-
-    let dict: HashMap<&str, i8> = HashMap::from([
-        ("a", map[row][col - 1]),
-        ("w", map[row - 1][col]),
-        ("s", map[row + 1][col]),
-        ("d", map[row][col + 1]),
-    ]);
-
-    dict
+pub fn get_next_move_value(curr: Position, map: &Vec<Vec<i8>>) -> MoveOptions {
+    MoveOptions {
+        options: HashMap::from([
+            ("a", map[curr.row][curr.col - 1]),
+            ("w", map[curr.row - 1][curr.col]),
+            ("s", map[curr.row + 1][curr.col]),
+            ("d", map[curr.row][curr.col + 1]),
+        ]),
+    }
 }
 
-pub fn display(current: (usize, usize), next: &HashMap<&str, i8>, map: &Vec<Vec<i8>>) -> () {
-    println!("\t{:?}", next["w"]);
+pub fn display(current: Position, next: &MoveOptions, map: &Vec<Vec<i8>>) -> () {
+    println!("\t{:?}", next.options["w"]);
     println!(
         "{:?}\t{:?}\t{:?}",
-        next["a"], map[current.0 as usize][current.1 as usize], next["d"]
+        next.options["a"], map[current.row][current.col], next.options["d"]
     );
-    println!("\t{:?}", next["s"]);
+    println!("\t{:?}", next.options["s"]);
 }
 
-pub fn move_character(current: (usize, usize), input: &str) -> Result<usize, ()> {
-    let row = current.0 as usize;
-    let col = current.1 as usize;
-
+pub fn move_character(current: Position, input: &str) -> Result<usize, ()> {
     match input {
-        "a" => Ok(col - 1),
-        "w" => Ok(row - 1),
-        "s" => Ok(row + 1),
-        "d" => Ok(col + 1),
+        "a" => Ok(current.col - 1),
+        "w" => Ok(current.row - 1),
+        "s" => Ok(current.row + 1),
+        "d" => Ok(current.col + 1),
         _ => Err(()),
     }
 }
 
 // No return values
-pub fn path_movement(
-    curr: (usize, usize),
-    input: String,
-    row_col: &mut usize,
-    moves: &mut Vec<String>,
-) {
+pub fn path_movement(curr: Position, input: String, row_col: &mut usize, moves: &mut Vec<String>) {
     match move_character(curr, &input) {
         Ok(new_val) => *row_col = new_val,
         Err(()) => eprintln!("Error moving character"),
@@ -61,7 +61,7 @@ pub fn path_movement(
     moves.push(input);
 }
 
-pub fn door_movement(curr: (usize, usize), input: String, row_col: &mut usize, extra_step: usize) {
+pub fn door_movement(curr: Position, input: String, row_col: &mut usize, extra_step: usize) {
     loop {
         println!("Enter door? y/n: ");
         let choice: String = read!();
@@ -94,7 +94,7 @@ pub fn door_movement(curr: (usize, usize), input: String, row_col: &mut usize, e
 }
 
 pub fn monster_movement(
-    curr: (usize, usize),
+    curr: Position,
     input: String,
     row_col: &mut usize,
     monsters: &Vec<String>,
@@ -140,7 +140,7 @@ pub fn monster_movement(
 }
 
 pub fn loot_movement(
-    curr: (usize, usize),
+    curr: Position,
     input: String,
     row_col: &mut usize,
     moves: &mut Vec<String>,

@@ -1,4 +1,3 @@
-
 use text_io::read;
 
 mod game;
@@ -59,7 +58,7 @@ fn main() {
         let input: String = read!();
 
         match input.as_str() {
-            "a" => match next_values[input.as_str()] {
+            "a" => match next_values.options[input.as_str()] {
                 0 => println!("Ow, there is a wall there."),
                 1 => path_movement(curr, input, &mut curr_col, &mut moves),
                 2 => loot_movement(curr, input, &mut curr_col, &mut moves, &mut user_weapons),
@@ -75,7 +74,7 @@ fn main() {
                 ),
                 _ => eprintln!("Tile doesn't exist."),
             },
-            "w" => match next_values[input.as_str()] {
+            "w" => match next_values.options[input.as_str()] {
                 0 => println!("Ow, there is a wall there."),
                 1 => path_movement(curr, input, &mut curr_row, &mut moves),
                 2 => loot_movement(curr, input, &mut curr_row, &mut moves, &mut user_weapons),
@@ -91,7 +90,7 @@ fn main() {
                 ),
                 _ => eprintln!("Tile doesn't exist."),
             },
-            "s" => match next_values[input.as_str()] {
+            "s" => match next_values.options[input.as_str()] {
                 0 => println!("Ow, there is a wall there."),
                 1 => path_movement(curr, input, &mut curr_row, &mut moves),
                 2 => loot_movement(curr, input, &mut curr_row, &mut moves, &mut user_weapons),
@@ -107,7 +106,7 @@ fn main() {
                 ),
                 _ => eprintln!("Tile doesn't exist."),
             },
-            "d" => match next_values[input.as_str()] {
+            "d" => match next_values.options[input.as_str()] {
                 0 => println!("Ow, there is a wall there."),
                 1 => path_movement(curr, input, &mut curr_col, &mut moves),
                 2 => loot_movement(curr, input, &mut curr_col, &mut moves, &mut user_weapons),
